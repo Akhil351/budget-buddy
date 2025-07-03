@@ -15,6 +15,7 @@ A command-line AI-powered finance assistant to help you track your income, expen
 - **Memory Persistence**: Conversations are automatically saved and restored between sessions.
 - **Database Storage**: Persistent SQLite database for storing all financial transactions.
 - **Dependency Injection**: Centralized database session management with proper cleanup.
+- **Multi-Database Support**: Ready for PostgreSQL with psycopg2-binary dependency.
 
 ---
 
@@ -28,6 +29,8 @@ budget-buddy/
 ├── README.md
 ├── memory.txt              # Conversation history (auto-generated)
 ├── budget_buddy.db         # SQLite database (auto-generated)
+├── .python-version         # Python version specification
+├── .gitignore              # Git ignore rules
 └── src/
     └── budget_buddy/
         ├── main.py         # Application entry point
@@ -57,6 +60,12 @@ Create a `.env` file in the root project folder:
 ```env
 # 🔧 OpenAI Configuration
 OPENAI_API_KEY=sk-your_openai_api_key_here
+OPENAI_MODEL=gpt-4o
+
+# 🏷️ Application Configuration
+APP_NAME=Budget Buddy
+APP_VERSION=1.0.0
+APP_DESCRIPTION=AI-powered finance assistant for tracking income and expenses
 
 # 🌍 Environment Info
 ENVIRONMENT=development
@@ -64,6 +73,7 @@ DEBUG=True
 
 # 🗄️ Database Configuration
 DATABASE_URL=sqlite:///./budget_buddy.db
+# For PostgreSQL: DATABASE_URL=postgresql://user:password@localhost/budget_buddy
 ```
 
 ---
@@ -129,6 +139,7 @@ python -m src.budget_buddy.main
 ### Database Storage
 
 - **SQLite Database**: All financial transactions are stored in `budget_buddy.db`
+- **PostgreSQL Ready**: Project includes psycopg2-binary for PostgreSQL support
 - **Transaction Model**: Stores income and expense entries with metadata
 - **Persistent Data**: Financial data survives application restarts
 - **Automatic Cleanup**: Database sessions are properly managed with dependency injection
@@ -177,6 +188,65 @@ python -m src.budget_buddy.main
 4. Create new models in `src/budget_buddy/models/` if needed
 5. Memory functions are automatically available for conversation persistence
 
+### Development Setup
+
+1. **Install Development Dependencies**:
+
+   ```bash
+   uv sync
+   ```
+
+2. **Set Up Environment**:
+
+   ```bash
+   cp .env.example .env  # if you have an example file
+   # Edit .env with your OpenAI API key
+   ```
+
+3. **Run the Application**:
+   ```bash
+   uv run python -m src.budget_buddy.main
+   ```
+
+---
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **OpenAI API Key Error**:
+
+   ```
+   ValueError: OPENAI_API_KEY is required. Please set it in your .env file.
+   ```
+
+   **Solution**: Add your OpenAI API key to the `.env` file.
+
+2. **Memory File Not Found**:
+
+   ```
+   FileNotFoundError: [Errno 2] No such file or directory: 'memory.txt'
+   ```
+
+   **Solution**: This is normal for first run. The file will be created automatically.
+
+3. **Database Connection Issues**:
+
+   - For SQLite: Ensure write permissions in the project directory
+   - For PostgreSQL: Check connection string and database existence
+
+4. **Python Version Issues**:
+   ```
+   RuntimeError: Python 3.13+ required
+   ```
+   **Solution**: Use Python 3.13 or higher as specified in `.python-version`.
+
+### Performance Tips
+
+- **Memory Management**: Clear conversation memory periodically if it grows large
+- **Database Optimization**: For large datasets, consider switching to PostgreSQL
+- **API Usage**: Monitor your OpenAI API usage to avoid rate limits
+
 ---
 
 ## 🤝 Contributing
@@ -186,6 +256,14 @@ python -m src.budget_buddy.main
 3. Make changes and commit
 4. Push to your branch
 5. Open a pull request
+
+### Development Guidelines
+
+- Follow the existing code structure and patterns
+- Add type hints to all functions
+- Update documentation for new features
+- Test your changes thoroughly
+- Ensure memory persistence works correctly
 
 ---
 
@@ -200,7 +278,7 @@ This project is licensed for educational or personal use.
 - [LangChain](https://github.com/langchain-ai/langchain)
 - [LangGraph](https://github.com/langchain-ai/langgraph)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
-- [OpenAI](https://platform.openai.com/)
+- [OpenAI](https://openai.com/)
 
 ---
 
