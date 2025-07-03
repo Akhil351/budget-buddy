@@ -102,6 +102,12 @@ def get_today_date() -> str:
     """Return today's date in YYYY-MM-DD format."""
     return f"📅 Today's date is {datetime.date.today()}"
 
+@tool
+def get_current_month() -> str:
+    """Return the current month name."""
+    month = datetime.date.today().strftime("%B") # string format time
+    return f"📆 The current month is {month}"
+
 # Export tool list for convenience
 TOOLS = [
     add_income,
@@ -110,4 +116,5 @@ TOOLS = [
     get_total_income,
     get_total_expense,
     get_today_date,
+    get_current_month
 ] 
