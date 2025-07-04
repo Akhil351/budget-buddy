@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from src.budget_buddy.core.deps import get_db
 from src.budget_buddy.models import Transaction, TransactionType
 from sqlalchemy import func
+from langchain_tavily import TavilySearch
 
 # Helper function to format amount as ₹XX,XXX.00
 def format_inr(amount: float) -> str:
@@ -98,15 +99,19 @@ def get_total_expense(from_date: str, to_date: str) -> str:
         return f"❌ Error getting total expense: {str(e)}"
 
 @tool
-def get_today_date() -> str:
-    """Return today's date in YYYY-MM-DD format."""
-    return f"📅 Today's date is {datetime.date.today()}"
+def get_full_date_info() -> str:
+    """Returns today's full date with year, month, and day in a readable format."""
+    today = datetime.date.today()
+    year = today.year
+    month = today.strftime("%B")  # Full month name
+    day = today.day
+    return f"�� Today is {month} {day}, {year}"
 
 @tool
-def get_current_month() -> str:
-    """Return the current month name."""
-    month = datetime.date.today().strftime("%B") # string format time
-    return f"📆 The current month is {month}"
+def web_search(query: str) -> str:
+    """Use this tool to get real-time web search results for current events."""
+    tavily = TavilySearch()
+    return tavily.run(query)
 
 # Export tool list for convenience
 TOOLS = [
@@ -115,6 +120,6 @@ TOOLS = [
     get_balance,
     get_total_income,
     get_total_expense,
-    get_today_date,
-    get_current_month
+    get_full_date_info,
+    web_search
 ] 
