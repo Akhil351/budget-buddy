@@ -1,21 +1,24 @@
 # Budget Buddy
 
-A command-line AI-powered finance assistant to help you track your income, expenses, and balances. Built with [LangGraph](https://github.com/langchain-ai/langgraph), [LangChain](https://github.com/langchain-ai/langchain), [SQLAlchemy](https://www.sqlalchemy.org/), and OpenAI's GPT-4o.
+A command-line AI-powered finance assistant to help you track your income, expenses, and balances. Built with [LangGraph](https://github.com/langchain-ai/langgraph), [LangChain](https://github.com/langchain-ai/langchain), [SQLAlchemy](https://www.sqlalchemy.org/), [Tavily](https://tavily.com/), and OpenAI's GPT-4o.
+
+**Budget Buddy** is your intelligent financial companion that combines conversational AI with powerful financial tracking capabilities. It features real-time web search, currency formatting, PostgreSQL database support, and persistent conversation memory to provide a comprehensive personal finance management experience.
 
 ---
 
 ## 🚀 Features
 
-- **Add Income**: Log new income entries with name and amount.
-- **Add Expense**: Log new expense entries with name and amount.
-- **Get Balance**: View your current net balance.
-- **Get Total Income/Expense**: Query total income or expenses for a date range.
-- **Get Today's Date**: Ask for the current date.
-- **Conversational AI**: Interact naturally with the assistant in a chat-like CLI.
-- **Memory Persistence**: Conversations are automatically saved and restored between sessions.
-- **Database Storage**: Persistent SQLite database for storing all financial transactions.
-- **Dependency Injection**: Centralized database session management with proper cleanup.
-- **Multi-Database Support**: Ready for PostgreSQL with psycopg2-binary dependency.
+- **💰 Smart Financial Tracking**: Log income and expenses with intelligent categorization
+- **📊 Real-time Balance Monitoring**: Get instant balance updates with Indian Rupee formatting
+- **📅 Enhanced Date Tools**: Get today's date with full month name and year
+- **🌐 Real-time Web Search**: Access current events, weather, news, and live information
+- **🗄️ Production Database**: PostgreSQL support with automatic session management
+- **💾 Persistent Memory**: Conversations automatically saved and restored between sessions
+- **🎯 Conversational AI**: Natural language interaction with context awareness
+- **🔧 Modular Architecture**: Clean separation of concerns with dependency injection
+- **📈 Date Range Analytics**: Query income/expense totals for specific time periods
+- **🛡️ Error Handling**: Robust error handling with graceful fallbacks
+- **⚡ High Performance**: Optimized database queries and memory management
 
 ---
 
@@ -62,6 +65,9 @@ Create a `.env` file in the root project folder:
 OPENAI_API_KEY=sk-your_openai_api_key_here
 OPENAI_MODEL=gpt-4o
 
+# 🔍 Tavily Search Configuration
+TAVILY_API_KEY=tvly-your_tavily_api_key_here
+
 # 🏷️ Application Configuration
 APP_NAME=Budget Buddy
 APP_VERSION=1.0.0
@@ -72,8 +78,8 @@ ENVIRONMENT=development
 DEBUG=True
 
 # 🗄️ Database Configuration
-DATABASE_URL=sqlite:///./budget_buddy.db
-# For PostgreSQL: DATABASE_URL=postgresql://user:password@localhost/budget_buddy
+DATABASE_URL=postgresql://user:password@localhost/budget_buddy
+# For SQLite: DATABASE_URL=sqlite:///./budget_buddy.db
 ```
 
 ---
@@ -84,6 +90,7 @@ DATABASE_URL=sqlite:///./budget_buddy.db
 
 - Python **3.13** (see `.python-version`)
 - [OpenAI API Key](https://platform.openai.com/account/api-keys)
+- [Tavily API Key](https://tavily.com/) (for web search functionality)
 
 ### Installation
 
@@ -125,12 +132,13 @@ python -m src.budget_buddy.main
 
 ## 🧰 Tool Functions
 
-- `add_income(name: str, amount: float)` — Add an income entry to the database
-- `add_expense(name: str, amount: float)` — Add an expense entry to the database
-- `get_balance()` — Get net balance from all income and expense records
-- `get_total_income(from_date: str, to_date: str)` — Get total income in a date range (YYYY-MM-DD)
-- `get_total_expense(from_date: str, to_date: str)` — Get total expense in a date range (YYYY-MM-DD)
-- `get_today_date()` — Get today's date in YYYY-MM-DD format
+- `add_income(name: str, amount: float)` — Add an income entry with automatic date tracking
+- `add_expense(name: str, amount: float)` — Add an expense entry with automatic date tracking
+- `get_balance()` — Get real-time net balance with Indian Rupee formatting
+- `get_total_income(from_date: str, to_date: str)` — Get total income for date range (YYYY-MM-DD)
+- `get_total_expense(from_date: str, to_date: str)` — Get total expense for date range (YYYY-MM-DD)
+- `get_full_date_info()` — Get today's date with full month name (e.g., "January 15, 2024")
+- `web_search(query: str)` — Get real-time information from the web using Tavily search
 
 ---
 
@@ -138,18 +146,21 @@ python -m src.budget_buddy.main
 
 ### Database Storage
 
-- **SQLite Database**: All financial transactions are stored in `budget_buddy.db`
-- **PostgreSQL Ready**: Project includes psycopg2-binary for PostgreSQL support
-- **Transaction Model**: Stores income and expense entries with metadata
-- **Persistent Data**: Financial data survives application restarts
-- **Automatic Cleanup**: Database sessions are properly managed with dependency injection
+- **PostgreSQL Database**: Production-ready database with automatic connection management
+- **SQLite Support**: Local development option with SQLite database
+- **Transaction Model**: Unified model for income and expense entries with metadata
+- **Persistent Data**: Financial data survives application restarts and server reboots
+- **Automatic Cleanup**: Database sessions properly managed with dependency injection
+- **Connection Pooling**: Optimized database connections for better performance
 
 ### Conversation Memory
 
-- **Auto-Save**: Conversations are saved to `memory.txt` when you exit
-- **Auto-Load**: Previous conversations are restored when you restart
-- **Complete Preservation**: All message details, tool calls, and metadata are preserved
+- **Auto-Save**: Conversations automatically saved to `memory.txt` when exiting
+- **Auto-Load**: Previous conversations restored when restarting the application
+- **Complete Preservation**: All message details, tool calls, and metadata preserved
 - **JSON Format**: Human-readable JSON storage with UTF-8 encoding support
+- **Error Recovery**: Graceful handling of corrupted or missing memory files
+- **Memory Status**: Real-time status reporting of memory file state
 
 ### Memory Functions
 
@@ -172,6 +183,7 @@ python -m src.budget_buddy.main
 - **Type Safety**: Full type hints throughout the codebase
 - **Clean Imports**: Absolute imports with `src.budget_buddy.*` pattern
 - **Memory Persistence**: Automatic conversation history management
+- **Web Search Integration**: LangChain Tavily integration for real-time information
 
 ### Database Architecture
 
@@ -179,6 +191,7 @@ python -m src.budget_buddy.main
 - **Transaction Model**: Unified model for both income and expense entries
 - **Session Management**: Proper lifecycle management with try/finally cleanup
 - **Dependency Injection**: `get_db()` generator function for session handling
+- **PostgreSQL Support**: Production-ready database with connection pooling
 
 ### Adding New Features
 
@@ -187,6 +200,7 @@ python -m src.budget_buddy.main
 3. Add configuration options in `src/budget_buddy/core/config.py` if needed
 4. Create new models in `src/budget_buddy/models/` if needed
 5. Memory functions are automatically available for conversation persistence
+6. For web search functionality, use `langchain_tavily.TavilySearch()`
 
 ### Development Setup
 
@@ -200,7 +214,7 @@ python -m src.budget_buddy.main
 
    ```bash
    cp .env.example .env  # if you have an example file
-   # Edit .env with your OpenAI API key
+   # Edit .env with your OpenAI API key and Tavily API key
    ```
 
 3. **Run the Application**:
@@ -222,7 +236,15 @@ python -m src.budget_buddy.main
 
    **Solution**: Add your OpenAI API key to the `.env` file.
 
-2. **Memory File Not Found**:
+2. **Tavily API Key Error**:
+
+   ```
+   ValueError: TAVILY_API_KEY is required for web search functionality.
+   ```
+
+   **Solution**: Add your Tavily API key to the `.env` file.
+
+3. **Memory File Not Found**:
 
    ```
    FileNotFoundError: [Errno 2] No such file or directory: 'memory.txt'
@@ -230,12 +252,12 @@ python -m src.budget_buddy.main
 
    **Solution**: This is normal for first run. The file will be created automatically.
 
-3. **Database Connection Issues**:
+4. **Database Connection Issues**:
 
    - For SQLite: Ensure write permissions in the project directory
    - For PostgreSQL: Check connection string and database existence
 
-4. **Python Version Issues**:
+5. **Python Version Issues**:
    ```
    RuntimeError: Python 3.13+ required
    ```
@@ -245,7 +267,8 @@ python -m src.budget_buddy.main
 
 - **Memory Management**: Clear conversation memory periodically if it grows large
 - **Database Optimization**: For large datasets, consider switching to PostgreSQL
-- **API Usage**: Monitor your OpenAI API usage to avoid rate limits
+- **API Usage**: Monitor your OpenAI and Tavily API usage to avoid rate limits
+- **Web Search**: Use specific queries for better search results
 
 ---
 
@@ -264,6 +287,7 @@ python -m src.budget_buddy.main
 - Update documentation for new features
 - Test your changes thoroughly
 - Ensure memory persistence works correctly
+- Use proper error handling in new tools
 
 ---
 
@@ -278,8 +302,9 @@ This project is licensed for educational or personal use.
 - [LangChain](https://github.com/langchain-ai/langchain)
 - [LangGraph](https://github.com/langchain-ai/langgraph)
 - [SQLAlchemy](https://www.sqlalchemy.org/)
+- [Tavily](https://tavily.com/)
 - [OpenAI](https://openai.com/)
 
 ---
 
-**Budget Buddy** — Built with ❤️ using LangChain + LangGraph + SQLAlchemy + OpenAI
+**Budget Buddy** — Built with ❤️ using LangChain + LangGraph + SQLAlchemy + Tavily + OpenAI
