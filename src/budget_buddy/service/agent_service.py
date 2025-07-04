@@ -8,13 +8,13 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 
 # ✅ Import tools
-from .finance_tools import add_income, add_expense, get_balance, get_total_income, get_total_expense, get_today_date , get_current_month
+from .finance_tools import add_income, add_expense, get_balance, get_total_income, get_total_expense, get_full_date_info, web_search
 
 # ✅ Import settings
 from src.budget_buddy.core.config import settings
 
 # ✅ Available tools for the agent
-tools = [add_income, add_expense, get_balance, get_total_income, get_total_expense, get_today_date,get_current_month]
+tools = [add_income, add_expense, get_balance, get_total_income, get_total_expense,get_full_date_info,web_search]
 
 # ✅ Define state passed through the graph
 class AgentState(TypedDict):
